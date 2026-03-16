@@ -39,12 +39,18 @@ export function EditPostDialog({ post, open, onClose, onSave }: EditPostDialogPr
   const [scheduledAt, setScheduledAt] = useState("");
   const [loading, setLoading] = useState(false);
 
+  function toLocalDateTimeString(date: Date): string {
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+  }
+
   useEffect(() => {
     if (post) {
       setContent(post.content);
       setPlatforms(post.platforms ?? []);
       setScheduledAt(
-        post.scheduledAt ? new Date(post.scheduledAt).toISOString().slice(0, 16) : ""
+        post.scheduledAt ? toLocalDateTimeString(new Date(post.scheduledAt)) : ""
       );
     }
   }, [post]);
@@ -99,22 +105,32 @@ export function EditPostDialog({ post, open, onClose, onSave }: EditPostDialogPr
               {(["TWITTER", "LINKEDIN", "INSTAGRAM"] as const).map((p) => {
                 const selected = platforms.includes(p);
                 const cfg = PLATFORM_ACTIVE[p];
+                const comingSoon = p === "TWITTER" || p === "INSTAGRAM";
                 return (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => togglePlatform(p)}
-                    style={selected && cfg.style ? cfg.style : undefined}
-                    className={`px-3.5 py-1.5 rounded-lg border-2 font-medium text-xs transition-all duration-200 active:scale-95 ${
-                      selected
-                        ? cfg.className ?? ""
-                        : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
-                    }`}
-                  >
-                    {p === "TWITTER" && "𝕏 Twitter"}
-                    {p === "LINKEDIN" && "LinkedIn"}
-                    {p === "INSTAGRAM" && "Instagram"}
-                  </button>
+                  <div key={p} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => !comingSoon && togglePlatform(p)}
+                      disabled={comingSoon}
+                      style={selected && cfg.style ? cfg.style : undefined}
+                      className={`px-3.5 py-1.5 rounded-lg border-2 font-medium text-xs transition-all duration-200 active:scale-95 ${
+                        comingSoon
+                          ? "opacity-40 cursor-not-allowed bg-background text-muted-foreground border-border"
+                          : selected
+                          ? cfg.className ?? ""
+                          : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+                      }`}
+                    >
+                      {p === "TWITTER" && "𝕏 Twitter"}
+                      {p === "LINKEDIN" && "LinkedIn"}
+                      {p === "INSTAGRAM" && "Instagram"}
+                    </button>
+                    {comingSoon && (
+                      <span className="absolute -top-2 -right-2 text-[9px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">
+                        Soon
+                      </span>
+                    )}
+                  </div>
                 );
               })}
             </div>
@@ -151,6 +167,7 @@ export function EditPostDialog({ post, open, onClose, onSave }: EditPostDialogPr
               type="datetime-local"
               value={scheduledAt}
               onChange={(e) => setScheduledAt(e.target.value)}
+              min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
               className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all duration-200"
             />
           </div>

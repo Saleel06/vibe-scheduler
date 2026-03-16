@@ -16,6 +16,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "postId and scheduledAt are required" }, { status: 400 });
     }
 
+    const scheduledDate = new Date(scheduledAt);
+    if (isNaN(scheduledDate.getTime())) {
+      return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    }
+    if (scheduledDate <= new Date()) {
+      return NextResponse.json({ error: "Scheduled time must be in the future" }, { status: 400 });
+    }
+
     const user = await prisma.user.findUnique({
       where: { email: session.user.email! },
     });
@@ -27,7 +35,7 @@ export async function POST(req: Request) {
     const post = await prisma.post.update({
       where: { id: postId, userId: user.id },
       data: {
-        scheduledAt: new Date(scheduledAt),
+        scheduledAt: scheduledDate,
         status: "SCHEDULED",
       },
     });

@@ -16,12 +16,14 @@ const PLATFORMS: {
   activeClass: string;
   icon: string;
   activeStyle?: React.CSSProperties;
+  comingSoon?: boolean;
 }[] = [
   {
     key: "TWITTER",
     label: "𝕏 Twitter",
     activeClass: "bg-black text-white border-black",
     icon: "𝕏",
+    comingSoon: true,
   },
   {
     key: "LINKEDIN",
@@ -35,6 +37,7 @@ const PLATFORMS: {
     activeClass: "text-white border-transparent",
     activeStyle: { background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" },
     icon: "📷",
+    comingSoon: true,
   },
 ];
 
@@ -162,12 +165,13 @@ export function PostComposer() {
     try {
       const imagePayload = await Promise.all(
         images.map(({ file }) =>
-          new Promise<{ data: string; mimeType: string }>((resolve) => {
+          new Promise<{ data: string; mimeType: string }>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => {
               const base64 = (reader.result as string).split(",")[1];
               resolve({ data: base64, mimeType: file.type });
             };
+            reader.onerror = () => reject(new Error(`Failed to read image: ${file.name}`));
             reader.readAsDataURL(file);
           })
         )
@@ -204,21 +208,30 @@ export function PostComposer() {
       <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Platforms</p>
         <div className="flex gap-2 flex-wrap">
-          {PLATFORMS.map(({ key, label, activeClass, activeStyle }) => {
+          {PLATFORMS.map(({ key, label, activeClass, activeStyle, comingSoon }) => {
             const sel = selectedPlatforms.includes(key);
             return (
-              <button
-                key={key}
-                onClick={() => togglePlatform(key)}
-                style={sel && activeStyle ? activeStyle : undefined}
-                className={`px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-200 active:scale-95 ${
-                  sel
-                    ? activeClass
-                    : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
-                }`}
-              >
-                {label}
-              </button>
+              <div key={key} className="relative">
+                <button
+                  onClick={() => !comingSoon && togglePlatform(key)}
+                  disabled={comingSoon}
+                  style={sel && activeStyle ? activeStyle : undefined}
+                  className={`px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-200 active:scale-95 ${
+                    comingSoon
+                      ? "opacity-40 cursor-not-allowed bg-background text-muted-foreground border-border"
+                      : sel
+                      ? activeClass
+                      : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+                {comingSoon && (
+                  <span className="absolute -top-2 -right-2 text-[9px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">
+                    Soon
+                  </span>
+                )}
+              </div>
             );
           })}
         </div>
@@ -293,9 +306,14 @@ export function PostComposer() {
 
       {/* Schedule */}
       <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-          <CalendarClock className="size-3.5" /> Schedule for Later
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <CalendarClock className="size-3.5" /> Schedule for Later
+          </p>
+          <span className="text-xs text-muted-foreground">
+            {Intl.DateTimeFormat().resolvedOptions().timeZone}
+          </span>
+        </div>
         <input
           type="datetime-local"
           value={scheduledAt}

@@ -85,38 +85,58 @@ export default async function DashboardPage() {
           ))}
         </div>
 
-        {/* Quick actions */}
+        {/* Empty state / Quick actions */}
         <FadeIn delay={0.3}>
-          <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quick actions</h2>
-            <div className="grid sm:grid-cols-2 gap-4">
+          {total === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border p-10 flex flex-col items-center text-center gap-4">
+              <div className="size-14 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
+                <PenSquare className="size-7 text-indigo-500" />
+              </div>
+              <div className="space-y-1">
+                <p className="font-semibold text-lg">Create your first post</p>
+                <p className="text-sm text-muted-foreground max-w-xs">
+                  Schedule content to LinkedIn and grow your audience on autopilot.
+                </p>
+              </div>
               <Link
                 href="/dashboard/compose"
-                className="group bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 flex items-center justify-between hover:opacity-90 transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 px-6 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition-all shadow-lg shadow-indigo-500/25"
               >
-                <div className="space-y-1">
-                  <p className="font-bold text-white">Compose Post</p>
-                  <p className="text-sm text-white/70">Create and schedule content</p>
-                </div>
-                <div className="size-10 rounded-xl bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform duration-200">
-                  <PenSquare className="size-5 text-white" />
-                </div>
-              </Link>
-
-              <Link
-                href="/dashboard/queue"
-                className="group bg-card border border-border rounded-2xl p-6 flex items-center justify-between hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
-              >
-                <div className="space-y-1">
-                  <p className="font-bold">View Queue</p>
-                  <p className="text-sm text-muted-foreground">Manage your posts</p>
-                </div>
-                <div className="size-10 rounded-xl bg-muted flex items-center justify-center group-hover:translate-x-1 transition-transform duration-200">
-                  <LayoutList className="size-5 text-muted-foreground" />
-                </div>
+                <PenSquare className="size-4" /> Compose a post
               </Link>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-4">
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quick actions</h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Link
+                  href="/dashboard/compose"
+                  className="group bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 flex items-center justify-between hover:opacity-90 transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5"
+                >
+                  <div className="space-y-1">
+                    <p className="font-bold text-white">Compose Post</p>
+                    <p className="text-sm text-white/70">Create and schedule content</p>
+                  </div>
+                  <div className="size-10 rounded-xl bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform duration-200">
+                    <PenSquare className="size-5 text-white" />
+                  </div>
+                </Link>
+
+                <Link
+                  href="/dashboard/queue"
+                  className="group bg-card border border-border rounded-2xl p-6 flex items-center justify-between hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
+                >
+                  <div className="space-y-1">
+                    <p className="font-bold">View Queue</p>
+                    <p className="text-sm text-muted-foreground">Manage your posts</p>
+                  </div>
+                  <div className="size-10 rounded-xl bg-muted flex items-center justify-center group-hover:translate-x-1 transition-transform duration-200">
+                    <LayoutList className="size-5 text-muted-foreground" />
+                  </div>
+                </Link>
+              </div>
+            </div>
+          )}
         </FadeIn>
       </div>
     </PageWrapper>
