@@ -51,6 +51,13 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
+      console.log("[signIn] provider:", account?.provider, "user:", user?.email);
+      try {
+        await prisma.user.findFirst({ take: 1 });
+        console.log("[signIn] DB connection OK");
+      } catch (e) {
+        console.error("[signIn] DB connection FAILED:", e);
+      }
       // When LinkedIn OAuth completes, persist to SocialAccount table
       if (account?.provider === "linkedin" && account.access_token && user.id) {
         try {
