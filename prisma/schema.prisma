@@ -91,6 +91,7 @@ model Post {
   userId        String
   content       String         @db.Text
   mediaUrls     String[]
+  platforms     Platform[]
   status        PostStatus     @default(DRAFT)
   scheduledAt   DateTime?
   publishedAt   DateTime?
