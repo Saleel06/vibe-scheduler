@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus, X, CalendarClock, Loader2 } from "lucide-react";
 
@@ -10,7 +10,13 @@ const PLATFORM_LIMITS: Record<string, number> = {
   INSTAGRAM: 2200,
 };
 
-const PLATFORMS = [
+const PLATFORMS: {
+  key: string;
+  label: string;
+  activeClass: string;
+  icon: string;
+  activeStyle?: React.CSSProperties;
+}[] = [
   {
     key: "TWITTER",
     label: "𝕏 Twitter",
@@ -30,7 +36,7 @@ const PLATFORMS = [
     activeStyle: { background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" },
     icon: "📷",
   },
-] as const;
+];
 
 export function PostComposer() {
   const router = useRouter();
