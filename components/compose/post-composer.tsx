@@ -78,7 +78,10 @@ export function PostComposer() {
         const draft = JSON.parse(saved);
         setContent(draft.content ?? "");
         setSelectedPlatforms(draft.selectedPlatforms ?? []);
-        setScheduledAt(draft.scheduledAt ?? "");
+        // Only restore scheduledAt if it's in the future
+        if (draft.scheduledAt && new Date(draft.scheduledAt) > new Date()) {
+          setScheduledAt(draft.scheduledAt);
+        }
       } catch { /* ignore */ }
     }
   }, []);
@@ -297,7 +300,7 @@ export function PostComposer() {
           type="datetime-local"
           value={scheduledAt}
           onChange={(e) => setScheduledAt(e.target.value)}
-          min={new Date().toISOString().slice(0, 16)}
+          min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
           className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all duration-200"
         />
       </div>
