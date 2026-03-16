@@ -6,9 +6,9 @@ import { PostQueueDynamic } from "@/components/queue/post-queue-dynamic";
 export default function QueuePage() {
   return (
     <PageWrapper>
-      <div className="p-8 max-w-4xl space-y-8">
+      <div className="p-4 sm:p-6 md:p-8 max-w-4xl space-y-8">
         <FadeIn>
-          <div className="flex items-end justify-between">
+          <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Manage content</p>
               <h1 className="text-3xl font-bold tracking-tight">Post Queue</h1>

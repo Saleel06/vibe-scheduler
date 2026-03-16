@@ -315,25 +315,25 @@ export function PostComposer() {
       )}
 
       {/* Actions */}
-      <div className="flex gap-3 justify-end">
+      <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
         <button
           onClick={handleSaveDraft}
           disabled={loading || !content.trim()}
-          className="px-5 h-11 rounded-xl border border-border text-sm font-semibold hover:bg-muted transition-all duration-200 disabled:opacity-40 active:scale-95"
+          className="px-5 h-11 rounded-xl border border-border text-sm font-semibold hover:bg-muted transition-all duration-200 disabled:opacity-40 active:scale-95 sm:w-auto w-full"
         >
           Save Draft
         </button>
         <button
           onClick={handleSchedule}
           disabled={loading || isOverLimit || !content.trim()}
-          className="px-5 h-11 rounded-xl border border-indigo-500 text-indigo-500 text-sm font-semibold hover:bg-indigo-500 hover:text-white transition-all duration-200 disabled:opacity-40 active:scale-95"
+          className="px-5 h-11 rounded-xl border border-indigo-500 text-indigo-500 text-sm font-semibold hover:bg-indigo-500 hover:text-white transition-all duration-200 disabled:opacity-40 active:scale-95 sm:w-auto w-full"
         >
           Add to Queue
         </button>
         <button
           onClick={handlePostNow}
           disabled={loading || isOverLimit || !content.trim()}
-          className="px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 disabled:opacity-40 active:scale-95 flex items-center gap-2"
+          className="px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 disabled:opacity-40 active:scale-95 flex items-center justify-center gap-2 sm:w-auto w-full"
         >
           {loading ? <><Loader2 className="size-4 animate-spin" /> Posting…</> : "Post Now"}
         </button>

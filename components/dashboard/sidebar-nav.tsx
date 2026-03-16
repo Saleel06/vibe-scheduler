@@ -13,7 +13,7 @@ const navItems = [
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
-export function SidebarNav() {
+export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const [pendingHref, setPendingHref] = useState<string | null>(null);
 
@@ -28,7 +28,7 @@ export function SidebarNav() {
             key={href}
             href={href}
             prefetch={true}
-            onClick={() => setPendingHref(href)}
+            onClick={() => { setPendingHref(href); onNavigate?.(); }}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
               active
                 ? "bg-[#3f3f46] text-white"

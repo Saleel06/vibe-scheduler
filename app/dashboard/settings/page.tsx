@@ -20,7 +20,7 @@ export default function SettingsPage({
 
   return (
     <PageWrapper>
-      <div className="p-8 max-w-2xl space-y-8">
+      <div className="p-4 sm:p-6 md:p-8 max-w-2xl space-y-8">
         <FadeIn>
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Preferences</p>

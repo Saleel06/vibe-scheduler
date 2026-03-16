@@ -57,7 +57,7 @@ export default async function DashboardPage() {
 
   return (
     <PageWrapper>
-      <div className="p-8 max-w-5xl space-y-10">
+      <div className="p-4 sm:p-6 md:p-8 max-w-5xl space-y-10">
         {/* Header */}
         <FadeIn>
           <div className="space-y-1">
