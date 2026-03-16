@@ -16,6 +16,7 @@ const navItems = [
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   return (
     <nav className="flex-1 py-3 px-2 space-y-0.5">
@@ -43,17 +44,43 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 
       <div className="pt-3 mt-3 border-t border-white/10">
         <button
-          onClick={() => {
-            if (window.confirm("Are you sure you want to sign out?")) {
-              signOut({ callbackUrl: "/" });
-            }
-          }}
+          onClick={() => setShowConfirm(true)}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/40 hover:text-white hover:bg-[#27272a] transition-all duration-200"
         >
           <LogOut className="size-4 shrink-0" />
           Sign out
         </button>
       </div>
+
+      {/* Sign out confirmation modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowConfirm(false)}
+          />
+          <div className="relative z-10 bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-xl space-y-4">
+            <div className="space-y-1">
+              <h2 className="text-base font-semibold text-foreground">Sign out?</h2>
+              <p className="text-sm text-muted-foreground">You will be signed out of your account.</p>
+            </div>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 h-9 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="px-4 h-9 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
