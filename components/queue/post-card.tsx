@@ -124,10 +124,8 @@ export function PostCard({ post, onDelete, onEdit }: PostCardProps) {
         </div>
 
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="flex items-center justify-center size-7 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200">
-              <MoreHorizontal className="size-4" />
-            </button>
+          <DropdownMenuTrigger className="flex items-center justify-center size-7 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200">
+            <MoreHorizontal className="size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEdit(post)}>
