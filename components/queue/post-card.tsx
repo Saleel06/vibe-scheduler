@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { formatDistanceToNow, format } from "date-fns";
-import { Calendar, Clock, Pencil, Trash2 } from "lucide-react";
+import { Calendar, Clock, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   DRAFT:     { label: "Draft",     className: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20" },
@@ -116,21 +123,26 @@ export function PostCard({ post, onDelete, onEdit }: PostCardProps) {
           )}
         </div>
 
-        <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <button
-            onClick={() => onEdit(post)}
-            className="flex items-center gap-1.5 px-3 h-7 rounded-lg border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 active:scale-95"
-          >
-            <Pencil className="size-3" /> Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="flex items-center gap-1.5 px-3 h-7 rounded-lg border border-red-500/20 text-xs font-medium text-red-500 hover:bg-red-500/10 transition-all duration-200 active:scale-95 disabled:opacity-50"
-          >
-            <Trash2 className="size-3" /> {deleting ? "…" : "Delete"}
-          </button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center justify-center size-7 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200">
+              <MoreHorizontal className="size-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onEdit(post)}>
+              <Pencil className="size-3.5 mr-2" /> Edit
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={handleDelete}
+              disabled={deleting}
+              className="text-red-500 focus:text-red-500"
+            >
+              <Trash2 className="size-3.5 mr-2" /> {deleting ? "Deleting…" : "Delete"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
