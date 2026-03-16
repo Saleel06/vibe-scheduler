@@ -68,7 +68,7 @@ export function EditPostDialog({ post, open, onClose, onSave }: EditPostDialogPr
         body: JSON.stringify({
           content,
           platforms,
-          scheduledAt: scheduledAt || null,
+          scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : null,
           status: scheduledAt ? "SCHEDULED" : "DRAFT",
         }),
       });

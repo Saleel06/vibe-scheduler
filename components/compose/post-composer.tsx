@@ -140,7 +140,7 @@ export function PostComposer() {
       const schedRes = await fetch("/api/posts/schedule", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId: created.id, scheduledAt }),
+        body: JSON.stringify({ postId: created.id, scheduledAt: new Date(scheduledAt).toISOString() }),
       });
       const scheduled = await schedRes.json();
       if (!schedRes.ok) throw new Error(scheduled.error ?? "Failed to schedule post");
