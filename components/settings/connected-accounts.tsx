@@ -135,7 +135,7 @@ export function ConnectedAccounts() {
                     <button
                       onClick={() =>
                         signIn(platform.toLowerCase(), {
-                          callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/dashboard/settings?connected=${platform.toLowerCase()}`,
+                          callbackUrl: "/dashboard/settings?connected=linkedin",
                         })
                       }
                       className="flex items-center gap-1.5 px-4 h-8 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold hover:opacity-90 transition-all duration-200 shadow-sm shadow-indigo-500/20"
