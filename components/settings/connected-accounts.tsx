@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { signIn } from "next-auth/react";
 import { CheckCircle2, Link2Off, ExternalLink, Loader2 } from "lucide-react";
 
 interface SocialAccount {
@@ -16,6 +15,7 @@ const PLATFORM_META: Record<string, {
   label: string;
   icon: React.ReactNode;
   bg: string;
+  connectHref?: string;
 }> = {
   LINKEDIN: {
     label: "LinkedIn",
@@ -23,6 +23,7 @@ const PLATFORM_META: Record<string, {
       <span className="text-white text-xs font-bold">in</span>
     ),
     bg: "bg-[#0077b5]",
+    connectHref: "/api/linkedin/connect",
   },
   TWITTER: {
     label: "Twitter / X",
@@ -92,7 +93,7 @@ export function ConnectedAccounts() {
             const connected = connectedPlatforms.has(platform);
             const account = accounts.find((a) => a.platform === platform);
             const isDisc = disconnecting === platform;
-            const comingSoon = platform !== "LINKEDIN" && !connected;
+            const comingSoon = !meta.connectHref && !connected;
 
             return (
               <div key={platform} className="px-6 py-4 flex items-center justify-between gap-4">
@@ -132,16 +133,12 @@ export function ConnectedAccounts() {
                       Coming soon
                     </span>
                   ) : (
-                    <button
-                      onClick={() =>
-                        signIn(platform.toLowerCase(), {
-                          callbackUrl: "/dashboard/settings?connected=linkedin",
-                        })
-                      }
+                    <a
+                      href={meta.connectHref}
                       className="flex items-center gap-1.5 px-4 h-8 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold hover:opacity-90 transition-all duration-200 shadow-sm shadow-indigo-500/20"
                     >
                       <ExternalLink className="size-3" /> Connect
-                    </button>
+                    </a>
                   )}
                 </div>
               </div>
