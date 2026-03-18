@@ -1,24 +1,34 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { TrendingUp, Clock, CheckCircle2, FileText, PenSquare, LayoutList } from "lucide-react";
 import { PageWrapper, FadeIn } from "@/components/motion-wrapper";
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
-  const user = await prisma.user.findUnique({
-    where: { email: session!.user!.email! },
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const dbUser = await prisma.user.upsert({
+    where: { id: user!.id },
+    create: {
+      id: user!.id,
+      email: user!.email!,
+      name: user!.user_metadata?.name ?? user!.user_metadata?.full_name ?? null,
+    },
+    update: {},
   });
 
   const [total, scheduled, published, drafts] = await Promise.all([
-    prisma.post.count({ where: { userId: user!.id } }),
-    prisma.post.count({ where: { userId: user!.id, status: "SCHEDULED" } }),
-    prisma.post.count({ where: { userId: user!.id, status: "PUBLISHED" } }),
-    prisma.post.count({ where: { userId: user!.id, status: "DRAFT" } }),
+    prisma.post.count({ where: { userId: dbUser!.id } }),
+    prisma.post.count({ where: { userId: dbUser!.id, status: "SCHEDULED" } }),
+    prisma.post.count({ where: { userId: dbUser!.id, status: "PUBLISHED" } }),
+    prisma.post.count({ where: { userId: dbUser!.id, status: "DRAFT" } }),
   ]);
 
-  const firstName = session?.user?.name?.split(" ")[0] ?? "there";
+  const displayName = dbUser?.name ?? user?.user_metadata?.full_name ?? user?.email ?? "there";
+  const firstName = displayName.split(" ")[0];
 
   const stats = [
     {

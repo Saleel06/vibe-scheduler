@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { SidebarNav } from "@/components/dashboard/sidebar-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
@@ -10,15 +10,30 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/auth/login");
   }
 
-  const initials = session.user?.name
-    ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
-    : session.user?.email?.[0].toUpperCase() ?? "?";
+  const dbUser = await prisma.user.upsert({
+    where: { id: user.id },
+    create: {
+      id: user.id,
+      email: user.email!,
+      name: user.user_metadata?.name ?? user.user_metadata?.full_name ?? null,
+    },
+    update: {},
+  });
+  const userName = dbUser?.name ?? user.user_metadata?.full_name ?? user.email;
+  const userEmail = dbUser?.email ?? user.email;
+
+  const initials = userName
+    ? userName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+    : userEmail?.[0].toUpperCase() ?? "?";
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -38,10 +53,10 @@ export default async function DashboardLayout({
             {initials}
           </div>
           <div className="min-w-0 flex-1">
-            {session.user?.name && (
-              <p className="text-xs font-medium text-white truncate">{session.user.name}</p>
+            {userName && (
+              <p className="text-xs font-medium text-white truncate">{userName}</p>
             )}
-            <p className="text-xs text-white/40 truncate">{session.user?.email}</p>
+            <p className="text-xs text-white/40 truncate">{userEmail}</p>
           </div>
         </div>
       </aside>
@@ -49,8 +64,8 @@ export default async function DashboardLayout({
       {/* Mobile Nav */}
       <MobileNav
         initials={initials}
-        userName={session.user?.name}
-        userEmail={session.user?.email}
+        userName={userName}
+        userEmail={userEmail}
       />
 
       {/* Content */}
